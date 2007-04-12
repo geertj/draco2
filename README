@@ -1,10 +1,35 @@
+======
+Draco2
+======
 
 This is Draco2, a dynamic web application framework in Python.
 
-Installation instructions:
+Prerequisites
+-------------
+
+Draco2 depends on the following packages. They need to be installed before you can
+install Draco2.
+
+ * Python_: Our favourite scripting language. Version 2.4 or later is required.
+ * psycopg2_: A DB-API compatible interface to PostgreSQL_. Version 2.0.5 is
+   tested, later versions should work.
+ * lxml_: A *Pythonic* interface to XML for Python. Version 1.1.2 is tested,
+   later version should work.
+ * gdmodule_: A Python interface to the gd "graphic-draw" library.
+
+Installation instructions
+-------------------------
+
+Draco2 uses distutils so installation is easy::
 
   $ python setup.py build
   $ python setup.py install
 
 Geert Jansen
 April 2007
+
+.. _Python: http://www.python.org/
+.. _psycopg2: http://www.initd.org/tracker/psycopg
+.. _PostgreSQL: http://www.postgresql.org/
+.. _lxml: http://codespeak.net/lxml/
+.. _gdmodule: http://www.boskant.nl/trac/draco
