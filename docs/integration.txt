@@ -1,0 +1,54 @@
+==================================
+Draco Web Server Integration Model
+==================================
+
+Introduction
+============
+
+Draco is designed to work with multiple web servers. This document provides
+a small introduction on how the integration works.
+
+
+Integration Model
+=================
+
+First of all, it needs to be pointed out that Draco works exclusively with
+the HTTP protocol. Some web servers (such as Apache) offer different
+protocols as well. Draco does not support this, and there are no plans of
+supporting this in the future. HTTP is the de-facto transport protocol these
+days, and is used by many important Internet applications such as (X)HTML,
+XML-RPC, SOAP and RSS. Draco is a framework for creating dynamic web
+applications, and at the moment it is not clear whether there are important
+non-HTTP based applications in this area.
+
+In the Draco-Webserver integration model, the web server has the following
+responsibilities. If a web server does not provide these, the integration
+layer has to provide them.
+
+1. HTTP request/response handling. Draco expects to be able to retrieve
+   parsed HTTP request data (headers, status code, URI, ...) via the
+   interface as well as to be able to form a HTTP response.
+2. Authentication. Any authentication mechanims other than the builttin
+   form/cookie based authentication must be provided by the interface. Draco
+   will be able to pick up the results for some authentication schemes but
+   the process of requiring authentication for certain URLs, negotiating and
+   performing the authentication must be done completely by the interface.
+3. I/O. Draco expects read/write functions that read and write data to/form
+   the client.
+
+
+Integration Interface
+=====================
+
+To integrate Draco with a web server, a subclass of ``HTTPRequest`` (defined
+in ``draco.iface'' has to be provided, with all missing methods implemented.
+See the source file ``interface/interface.py'' for a description of the
+interface.
+
+
+Calling Into Draco
+==================
+
+To complete the integration, the web server must be configured to call the
+function ``handle_request'' (from ``draco.core.dispatch'') with the HTTP
+request subclass.

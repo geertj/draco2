@@ -1,0 +1,82 @@
+# set tw=76 ai
+==================
+Draco Database API
+==================
+
+Introduction
+============
+
+The Draco database API is as a front-end to a few DB-API modules of
+different database backends. It has two primary users:
+
+1. Draco itself. All database access in Draco goes through the Draco
+   database API.
+2. End user code. End users are encouraged to use the Draco database API.
+
+
+The follwing features are provides by the database API:
+
+1. Automatic connection handling.
+2. Common DB-API typing. Different database adapters often return different
+   types for BLOB or DATETIME columns. The DB-API in fact merely recommends
+   but does not mandate specific Python types for specific columns. This has
+   lead to a wild diversity in handling of for example BLOB and the various
+   DATE/TIME columns. The Draco Database API defines specific types for
+   these columns and installs type converters in the underlying DB-API
+   modules to implement these.
+3. Simple dialect handling. Small differences in the SQL supported by the
+   different database systems are handled by the Database API. The user can
+   use standard SQL, which will translated to a database specific version.
+
+Using the Database API
+======================
+
+The API is defined in the module ``draco.database``. The main class is the
+``DatabaseManager`` class. It provides the following API:
+
+Configuration File
+------------------
+
+A DatabaseManager can be configured using a configuration file. This is
+illustrated below::
+
+    [draco.database]
+    interface = 'interface_name'
+    dsn = 'data_source_string'
+
+
+Type Conversions
+----------------
+
+The following type convestions are defined. These conversions work both
+ways. If you want to add a value to a database, you'll have provide the
+Python type in the table below to the DB-API. When this attribute is
+queried, the same Python type will be returned.
+
+===============  =================
+SQL Column Type  Python Type
+---------------  -----------------
+BLOB             buffer
+DATE             datetime.date
+TIME             datetime.time
+TIMESTAMP        datetime.datetime
+INTERVAL         datetime.interval
+===============  =================
+
+
+Supported Database APIs
+=======================
+
+At the moment, the folowing RDBMSes are supported.
+
+* Postgresql_, using the psycopg2 module.
+* MySQL_, using the MySQLdb module.
+
+
+References
+==========
+
+.. Postgresql_: http://www.postgresql.org/
+.. _psycopg2: http://initd.org/project/psycopg2.
+.. MySQL: http://www.mysql.org
+.. MySQLdb: http://sourceforge.net/projects/mysql-python

@@ -1,0 +1,72 @@
+# vi: tw=72 ai
+=============================
+Open questions to be resolved
+=============================
+
+Questions
+=========
+
+1. Absolute imports, how?
+
+2. Define exceptions in ``subpkg.exceptions``, and then import it into
+   the main package definition?
+
+3. Factory functions inside core.dispatch or subsystem.module? Use a
+   class method?
+
+4. Pure abstract base classes, or already provide some common
+   implementations inside them?
+
+5. Do we need a global debug switch, also for mod_python interface?
+
+6. Do we need the client and server objects?
+
+7. Do we need a user object?
+
+8. Is there another way to pass multiple objects to class constructors
+   or other code?
+
+9. Do we need Namespace, or do dicts suffice just as well?
+
+10. Do all exceptions need a __str__() method?
+
+
+Refactoring Targets
+===================
+
+1. Event manager.
+
+2. Locale
+
+3. Opener
+
+4. Parser: pass around namespaces, or environments?
+
+
+Other Stuff
+===========
+
+We don't want the follwing code:
+
+    try:
+        transaction.commit()
+    except dbapi.Error:
+        # one type of error
+    except DatabaseError:
+        # antoher type of error
+    except ModelError:
+        # one more type of error
+
+Alternatives?
+
+    try:
+        transaction.commit()
+    except (dbapi.Error, DatabaseError, ModelError):
+        pass
+
+This doesn't seem so bad:
+
+    try:
+        transaction.commit()
+    except (DatabaseError, ModelError):
+        pass

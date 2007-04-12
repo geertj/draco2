@@ -1,0 +1,11 @@
+A Quick note about JPEG
+=======================
+
+This is a short technical note about JPEG headers and how to extract the
+image dimensions.
+
+A JFIF header consists of blocks. A block begins with one or more '0xff'
+bytes, followed by a non 0xff byte indicating the type of the block. This is
+then followed by a two byte length for the block.  We are interested in
+block of types in the range 0xc0..0xcf, the so called SOFn (Start Of Frame
+n) blocks. From these we can extract the image dimensions.

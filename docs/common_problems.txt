@@ -1,0 +1,22 @@
+==============================================
+Common Problems when building Dynamic Websites
+==============================================
+
+In other words, what Draco should resolve in order to be an efficient
+framework for creating dynamic web sites.
+
+
+1. Date Formatting
+------------------
+
+It is very common to require to format a date. In fact, every date should
+be formatted before it can be presented to the user. Clearly, a date
+should be formatted in the current locale. But what about different
+formats within a locale. In my experience, some of the formats that are
+requires are: compact, regular, full. In US/English conventions, these
+would correspond to: *mm/dd/yy hh:mm*, *mm/dd/yyyy hh:mm:ss* and *dayname
+dd monthname yyyy, hh:mm:sss.
+
+How and where to build this functionality?
+
+Current insight: add custom strftime() formatting operators?

@@ -1,0 +1,14 @@
+====================
+A Note about Cookies
+====================
+
+There appear to be three specifications for cookies.
+
+1. The original specification by netspace.
+2. A specification from RFC2109.
+3. A specification from RFC2965.
+
+It seems that the majority of all clients still uses the original Netscape
+specification.  This cookie class therefore uses that specification. The
+Netscape specification can be found at:
+http://wp.Netscape.com/newsref/std/cookie_spec.html

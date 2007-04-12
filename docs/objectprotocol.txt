@@ -1,0 +1,24 @@
+# vi: set tw=76 ai
+
+===============
+Object Protocol
+===============
+
+Introduction
+============
+
+The Draco2 API is implemented by a set of objects, each of which are
+accessible through the global ``api`` object. Some of these objects are
+singletons, some of these are instantiated per request. Objects may depend
+on other objects to function correctly. This document described the method
+by which Draco2 objects are created, their life-cycle and how they interact
+with other objects.
+
+
+Object Construction
+===================
+
+Objects can be constructed in two ways. The first way is by simply calling the
+class constructor. This way of constructing objects is used in the test code
+for example. By convention, an object constructor should ask for all required
+data to be able to operate.

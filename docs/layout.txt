@@ -1,0 +1,49 @@
+====================
+Draco Code Structure
+====================
+
+The Draco code base is divided into the following sub-directories::
+
+    /iface
+    /core
+    /util
+    /draco
+    /xmlrpc
+
+
+interface
+---------
+
+The ``iface`` directory contains the Draco abstract webserver interface
+``HTTPInterface``, and various subclasses implementing the interface for
+various web server platforms.
+
+core
+----
+
+The ``core`` directory contains the Draco request dispatcher, and core Draco
+objects that are independent of the handler type.
+
+util
+----
+
+The ``util`` directory contains self-contained utility modules that could be
+used outside the context of Draco as well.
+
+draco
+-----
+
+Contains the Draco handler. The Draco handler is the principal programming
+interface for creating web applications.
+
+xmlrpc
+------
+
+Contains the XML-RPC handler.
+
+
+documentation
+-------------
+
+The ``documentation`` directory contains reST formatted source code
+documentation.

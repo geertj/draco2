@@ -1,0 +1,10 @@
+
+This is Draco2, a dynamic web application framework in Python.
+
+Installation instructions:
+
+  $ python setup.py build
+  $ python setup.py install
+
+Geert Jansen
+April 2007

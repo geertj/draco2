@@ -1,0 +1,17 @@
+Draco model assumptions:
+
+* Objects and Associations.
+  - REVISED: Entities and Relations, both subclasses of "Object"
+* Associations consist of two relations.
+  - REVISED: No assiociations, just relations.
+* All objects have automatic primary keys.
+  - REVISED: No automatic primary keys.
+* Foreign keys for relations are are transparent.
+  - REVISED: Define object relationships with primary keys.
+* All attributes are class properties?
+* No editing contexts.
+  - REVISED: Provide transactions, but they are not pesistent.
+  - REVISED: Persistent transaction added.
+* Use DatabaseManager.getDialect()
+* Indices: what to do with these?
+  - REVISED: indexes property on Object

@@ -1,0 +1,17 @@
+include README
+include COMPAT
+include LICENSE
+include AUTHORS
+include ChangeLog
+include MANIFEST.in
+include draco/*.py
+include bin/*.py
+include lib/*.py
+include lib/*.ini
+include misc/*
+include doc/Makefile
+include doc/*.tex
+include doc/*.xmi
+include doc/*.png
+include doc/*.css
+include doc/sesssion-management

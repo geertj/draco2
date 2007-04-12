@@ -1,0 +1,58 @@
+====================
+Draco Error Handling
+====================
+
+Introduction
+============
+
+This document describes how errors are handled within Draco.
+
+
+Exceptions
+==========
+
+The folowing exception hierarchy is defined::
+
+  DracoException +- DracoError +- ModelError
+                 |             |- DatabaseError
+                 |             `- ...
+                 `- ServerReturn +- HttpOk
+                                 |- HttpNotFound
+                                 `- ...
+
+The two main types of exceptions are ``DracoError'' subclasses and
+``ServerReturn'' subclasses. DracoError subclasses are raised by Draco
+subcomponents and indicate an error in the subcomponent. These errors should
+be captured by the calling code, which can be Draco internal code or end
+user code. A DracoError exception that is not caught will result in a HTTP
+internal server error 500 response.
+
+The ``ServerReturn'' subclasses are never raised by Draco itself and are
+used exclusively by end-user code. The reason for this is that the Draco
+subcomponents are written to be independent components that can be tested
+separately and can be used outside the Draco framework as well. Each
+ServerReturn subclass has an associated HTTP status code, and optionally
+headers and a request body. ServerReturn exception are caught by the
+top-level Draco handler and result is a HTTP response as defined by the
+exception.
+
+
+HTTP Related Errors in Draco
+============================
+
+As explained above, Draco itself never raises a ServerReturn exception. If a
+Draco subcomponent is involved in the HTTP request processing and wants to
+be able to return specific HTTP status codes, the convention is that the
+function returns a 2-tuple as the return value. The first entry of the tuple
+is the HTTP status code (HTTP_OK for no error) and the second entry is the
+return data (None in case of error).
+
+
+Handler Return Values
+=====================
+
+Draco handlers can indicate an error in two ways.
+
+1. By raising a ServerReturn exception.
+2. By returning a HTTP response code other than HTTP_OK (200). Definitions
+   of all HTTP response codes can be found in ``draco.util.http''.

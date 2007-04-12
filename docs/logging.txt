@@ -1,0 +1,37 @@
+================
+Logging in Draco
+================
+
+Introduction
+============
+
+This document described how logging is performed in Draco.
+
+Python logging Package
+======================
+
+The principal method of logging for Draco is by using the standard Python
+``logging`` package. The root logger is configured by Draco to send output
+to the file ``draco.log`` in the document root of the web applications.
+
+The advantages of using the logging package are:
+
+1. Familiarity. The logging package is a standard Python package. This means
+   that many people are already familiar with its interfac.e
+2. Code duplication is reduced.
+3. Availability. The logging package provides an interface that is always
+   available, also outside the Draco framework. This is a great advantage
+   when writing unit tests. Unit tests do not need to provide an own logger
+   implementation.
+
+Reasons for Logging
+===================
+
+Many reasons exist for logging. Some of these reasons are:
+
+1. Troubleshooting the application (debugging).
+2. Notification of exceptional circumstances.
+3. Keeping a record of events for auditing purposes.
+
+Inside the Draco implementation, logging is mostly performed because of 2.
+User code can of course use the logging interface for any reason.

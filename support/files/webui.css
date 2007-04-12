@@ -1,0 +1,33 @@
+/* vi: ts=8 sts=4 sw=4 et
+ *
+ * webui.css: light default style for draco2.webui
+ *
+ * This file is part of the Second Home Support website.
+ * Copyright (c) 2005 Digital Fugue. All rights are reserved.
+ *
+ * $Revision: $ */
+
+form.webui input[type=button] { margin: 10px 0 0 10px; padding-left: 20px;
+                                padding-right: 20px; }
+
+/* <webui:form> */
+form.webui div.form { margin-left: 20px; width: 90%; }
+form.webui table.form { background-color: #bbb; border: 1px solid #000;
+                        padding: 10px; }
+form.webui table.form td:first-child { font-weight: bold; padding-right: 1em; }
+form.webui table.form td.error { color: #f00; font-style: italic; }
+
+/* <webui:listview> */
+form.webui div.listview { margin-left: 20px; width: 90%; }
+form.webui table.listview { border: 1px solid #000; width: 100%;
+                            border-collapse: collapse; }
+form.webui table.listview thead tr { font-weight: bold; }
+form.webui table.listview tr.active { background-color: #bbb; }
+form.webui div.listview div.buttonlist { width: 100%; text-align: center;
+                                         margin-left: auto; margin-right: auto; }
+form.webui div.navbar { position: relative; text-align: center; }
+form.webui div.navbar span.prev { position: absolute; left: 0px; }
+form.webui div.navbar span.next { position: absolute; right: 20px; }
+
+/* <webui:buttonlist> */
+form.webui div.buttonlist { margin-left: 20px; width: 90%; }

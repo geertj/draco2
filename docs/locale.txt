@@ -1,0 +1,137 @@
+=======================
+Locale support in Draco
+=======================
+
+Overview
+========
+
+Draco has full support for internationalisation (abbreviated as i18n) and
+localisation (abbreviated as l10n). These two terms are frequently mixed but
+for our purposes we'll call them just "locale support".
+
+Locale support in Draco centers around two areas: message translation and
+adaptation to local habits such as date format and currency. The onus of
+message translation is entirely on the web site developer: any message that
+is to be translated must be marked and a translation need to be provided.
+Adaptations to local habits is easier as Draco contains a database will
+proper settings for a number of locales.
+
+A locale is selected by a combination of an ISO 639 language code and an
+ISO 3166 territory, separated by a hyphen. The language selects the target
+language to messages to, while  the territory selects the local habits to
+use. Some examples of locales:
+
+* "en-us": English language with local habits from the US.
+* "en-uk": English language with UK local habits.
+* "nl-nl": Dutch language, dutch local habits.
+
+A slight complication is caused by the fact that the use of language can
+also be territory specific, and that the local customs in a certain
+territory can depend on the language. In the above example, the use of the
+English language is slightly different in the US and the UK. Therefore, when
+translating a message, first a locale specific message is searched (e.g.
+"en-us") and if not found a language specific message is tried ("en").
+
+The same is true for local habits: first the customs database is searched
+for the full locale and if not found the territoty specific settings are
+tried.
+
+
+Accessing Localisation Support
+==============================
+
+Any functionality related to localisation, so translation and local customs
+is provided by the ``Locale`` class. This class is instantiated by Draco and
+cofigured with the correct locale for the current request. It can be
+accessed through the API as ``api.locale``.
+
+The way in which a locale is configured for a certain request depends on the
+handler type. The Draco handler uses a path component from the URL to select
+the locale, while other handlers may use a default locale or configure it
+using other means.
+
+The current database of messages can be queried using the ``draco2.py``
+command line interface.
+
+
+Message Translation
+===================
+
+Message translation is done in two ways in Draco:
+
+1. Message tagging
+2. Alternate Templates
+
+Message tagging is most useful when translating short messages in templates,
+and is the only way for translating messages originating from Python code.
+Every message that is to be translated must be tagged.
+
+Draco uses the message tags to build a database of messages that are used by
+the web application. Each of these messages must be translated individually
+to the languages required. This can be done with the ``draco2.py``
+command-line tool or by creating a web interface to this functionality.
+
+Each message in the message database needs to be identified with a key. Two
+conventions are in wide-spread use for this: using the message as a key and
+using a user-provided ID string. The former convention is use by `GNU
+gettext`_ while the latter is used by Java and Java web applications. Both
+systems have advantages and disadvantages. The advantage of using the
+message as a key is that no work is required for the initial translation:
+when a translation is not found, the message is returned unaltered and
+displayed to the user. The advantage of using a user-supplied key is that
+when a message changes, translations to other languages will not be lost.
+This is of course a double edged sword: when a message changes little (such
+as punctuation changes), it may be OK to retain translations in other
+languages, but if the message changes content, you want to invalidate the
+translations and start again.
+
+Draco's model is a hybrid of the two models above. Each message can be
+provided an optional message ID. If a translation of the message using
+itself as a key is not succesfull, a translation is attempted using the
+message ID.
+
+Tagging Messages in Templates
+-----------------------------
+
+Tagging messages in templates is easy: just add a "translate" attribute. The
+message ID can be specified as a "msgid" attribuet. Example:
+
+::
+
+  <p translate="translate"> Hello, world! </p>
+  <p translate="translate" msgid="hello"> Hello, world! </p>
+
+Tagging Messages in Python Code
+-------------------------------
+
+Messages in Python code are tagged and translated with the ``tr()``
+function. If you only want to tag a message, but not translate it, use
+``tr_mark()``.
+
+::
+
+  from draco2.core import tr
+
+  print tr('Hello, World!')
+
+  msg = tr_mark('Hello, World!')
+  print tr(msg)
+
+
+Local Customs
+=============
+
+A web application can be made aware of local customs by using the functions
+provided by ``api.locale``. Functions exist to:
+
+* Format dates/times
+* Format currencies
+* Format numeric quantities
+
+
+Example::
+
+  print api.locale.format_numeric(1001)
+
+
+.. _`GNU gettext`: http://www.gnu.org/software/gettext/

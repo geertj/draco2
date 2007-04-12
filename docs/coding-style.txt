@@ -1,0 +1,9 @@
+Draco2 Coding Style
+===================
+
+
+1. Derived classes know about m_* members in base classes.
+
+2. Default values for paramters? If the default value is hard to guess,
+   use 'None' instead, and replace it with the proper default value in
+   the method.

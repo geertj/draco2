@@ -1,0 +1,234 @@
+Draco Model
+===========
+
+The Draco model is an attempt to map the abstractions of the
+Entity-Relationship diagram to Python language constructs. It is designed
+with a few design goals in mind:
+
+1. Powerfull. The mapping must provide maximum expressiveness.
+
+2. Simple. The model must be easy to develop and to use.
+
+3. Safe. The model must support transactions.
+
+
+The Entity-Relationship model
+-----------------------------
+
+The Entity Relationship (E-R) diagram is the de-facto way to represent
+relational data structures. A very brief introduction is presented here, but
+it is recommended to read Chen's original paper for a more in-depth
+description. Despite being almost 30 years old, the paper is still very
+accessible. Apart from this paper, there is many other information available
+on E-R models on the Internet.
+
+Two types of ``objects`` are defined by the E-R model:
+
+1. Entities
+2. Relationships
+
+Entities represent things that exist and are identifyable. This includes
+physical things like houses, books or persons, but also abstract concepts
+like an algorithm or a reward. Relationships represent connections between
+different entities. For example, the relationship *HouseOwner* can represent
+the connection between a house entity and a person entity.
+
+Entities are not mere abstractions but they have features. Each feature is
+called an **attribute** and can be thought of as a specific property of the
+entity.  For example, *age* could be an attribute of the entity *person*.
+
+Relationships can have attributes as well. For example, consider the
+relationship *HouseOwner*. If multiple people would own a house, each for a
+certain percentage, the *percentage* could be an attribute of the
+*HouseOwner* relationship.
+
+Entities are grouped in **Entity Sets**. The Entity itself represents one
+physical thing, the Entity Set represents the type of entity. Similarly,
+Relationships are grouped into **Relationship Sets**.
+
+Typically, E-R models are drawn into diagrams, the so-called E-R diagrams.
+
+
+The Draco Model
+---------------
+
+The Draco model defines a mapping from the abstract concepts of an E-R model
+to Python language constructs. A model can be defined in Python by defining
+Python language constructs as per the mapping.
+
+    =========           ===========
+    E-R Model           Draco Model
+    ========            ===========
+    Entity Set          ``Entity`` class
+    Entity              ``Entity`` instance
+    Relationship Set    ``Relationship`` class
+    Relationship        ``Relationship'' instance
+    Value Set           ``Attribute`` class
+    Value               ``Attribute instance
+    Attribute           ``Attribute`` instance in the ``attributes`` member of
+                        an ``Entity`` instance.
+    ==========          ============
+
+Some restrictions apply to Draco's model. These restrictions should not
+limit the expressiveness of the model, but are introduced to make the
+implementation easier.
+
+1. All entities are required to have exactly one primary key.
+2. A primary key cannot be compound, i.e. it must be a single attribute.
+
+The first thing to do when starting with Draco models is to define the model
+in Python by creating custom ``Attribute``, ``Entity`` and ``Relationship``
+classes. In E-R parlance, these define the Value Sets, Entity Sets and
+Relationship Sets of the model. For example:
+
+::
+
+    from draco.model import *
+
+    # Define Entities
+
+    class ID(PrimaryKey):
+        name = 'id'
+
+    class StreetAddress(StringAttribute):
+        name = 'address'
+
+    class House(Entity):
+        attributes = [ID, StreetAddress]
+
+    class GivenName(StringAttribute):
+        name = 'name'
+
+    class Surname(StringAttribute):
+        name = 'surname'
+
+    class Person(Entity):
+        attributes = [ID, GivenName, Surname]
+
+    # Define relationships
+
+    class HouseLink(ForeignKey):
+        name = 'house'
+        references = (House, ID)
+
+    class PersonLink(ForeignKey):
+        name = 'person'
+        references = (Person, ID)
+
+    class Fraction(FloatAttribute):
+        name = 'fraction'
+
+    class HouseOwner(Relationship):
+        name = 'house_owner'
+        attributes = [HouseLink, PersonLink, Fraction]
+
+
+Finally, the model itself needs to be defined as a subclass of ``Model``.
+
+::
+
+    class HouseOwnerModel(Model):
+        version = 1
+        name = 'house_owner_model'
+        entities = [House, Person]
+        relationships [HouseOwner]
+
+    HouseOwnerModel.fixup()
+
+The ``HouseOwnerModel`` model defined above binds together all entities and
+relationships. It also includes a version number and a name. After the model
+is defined, it is required to call the ``fixup()`` class method. This method
+will fill in various default values for the Attribute, Entity and
+Relationship subclasses defined in the model.
+
+If the model has been used before, it is ready for instantiation and use. If
+not, two things need to happen: the models needs to be validated for
+correctness, and an SQL schema needs to be generated::
+
+    HouseOwnerModel.check()
+    sqlcode = HouseOwnerModel.generate_sql(databasemgr)
+
+The class method ``generate_sql()`` requires a ``DatabaseManager`` instance
+as an argument. This provides the model with enough information on the
+particulars of the database to generate a sequence of SQL statements that
+create the correct SQL schema for the model. 
+
+The model is now ready to be instantiated and to be used::
+
+    model = HouseOwnerModel(databasemgr)
+
+As illustrated above, the constructor requies a ``DatabaseManager`` instance
+as its only argument. For more information on the Draco database manager
+interface, see `database manager`_.
+
+
+Using a Draco Model
+-------------------
+
+Once a draco model has been properly instantiated, it can be used. The
+following operations are supported:
+
+1. Create new entity and relationships, and store them.
+2. Retrieve entities or relationships matching a query. The query can
+   use full SQL syntax to select objects based on their attributes, or on
+   attributes on entities to which this object is related.
+3. Delete entities and relationships.
+
+All operations are performed inside a transaction. Before any action can be
+performed on the model, a new transaction must be created. After all
+operations are performed, a transaction can either be committed to make the
+changes persistent or rolled back to undo the changes. Example::
+
+    tnx = model.transaction()
+    # perform queries and/or modifications
+    tnx.commit()  # or tnx.rollback()
+
+Creating new entties and relationships is easy::
+    
+    tnx = model.transaction()
+
+    house = House()
+    house['street_address'] = 'The Street'
+    tnx.insert(house)
+
+    person = Person()
+    person['name'] = 'The Name'
+    tnx.insert(person)
+
+    owner = HouseOwner()
+    owner.set_role('house', House)
+    owner.set_role('person', Person)
+    tnx.insert(owner)
+
+    tnx.commit()
+    
+A simple objects query is performed as shown below::
+
+    result = transaction.query(House, 'address = %s', ('The Street',))
+
+Finding related objects:
+
+    result = transaction.query(HouseOwner, 'house = %s', (house['id',))
+    owners = []
+    for re in result:
+        owners.append(re.role('owner'))
+
+Join queries::
+
+    surname = 'A Surname'
+    result = transaction.query(House, 'surname = %s', (surname,),
+                               join=HouseOwner)
+    house = result[0]
+
+
+
+Runtime Validation of Business Logic
+------------------------------------
+
+
+    class HouseOwner(Relationship)
+
+.. [CHEN76] Peter Chen, *The Entity-Relationship Model--Toward a Unified
+   View of Data*. 
+.. `database manager`
+

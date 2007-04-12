@@ -1,0 +1,5 @@
+This directory contains a few Draco related utilities.
+
+draco.vim:
+
+  A vim syntax highlighting file for Draco templates.
