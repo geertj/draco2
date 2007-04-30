@@ -58,7 +58,7 @@
             m = 'Required attribute "name" not set on webui:column.'
             raise WebUIError, m
         label = column.attrib.get('label', name)
-        print '<td>%s</td>' % label
+        print '<td>%s</td>' % tr(label)
 %>
 </tr>
 </thead>
@@ -93,11 +93,11 @@
         if start > 0:
             args['start'] = str(max(start-pagesize, 0))
             url = api.response.patch_uri(navurl, args=args)
-            print '<span class="prev"><a href="%s">&lt; previous</a></span>' % url
+            print '<span class="prev"><a href="%s">&lt; %s </a></span>' % (url, tr('previous'))
         if start+len(data) < count:
             args['start'] = str(start + pagesize)
             url = api.response.patch_uri(navurl, args=args)
-            print '<span class="next"><a href="%s">next &gt;</a></span>' % url
+            print '<span class="next"><a href="%s">%s &gt;</a></span>' % (url, tr('next'))
         if count > pagesize:
             npages = 10
             firstpage = 0
@@ -131,7 +131,7 @@
     for action in actions:
         name = action.attrib['name']
         label = action.attrib.get('label', name)
-        print '<input type="button" name="%s" value="%s"' % (name, label)
+        print '<input type="button" name="%s" value="%s"' % (name, tr(label))
         print ' onclick="action_%s_%s()"' % (lvname, name)
         card = get_cardinality(action)
         if card[0] > 0:
