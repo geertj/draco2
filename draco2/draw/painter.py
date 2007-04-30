@@ -228,6 +228,17 @@ class Painter(object):
         # Alphablending
 	self.m_image.alphaBlending(self.m_blend)
 
+    # READ FUNCTIONS
+
+    def get_pixel(self, p):
+        """Read a pixel at location `p' and return the RGBA value."""
+        self._check_image()
+        self._apply_image()
+        x,y = self.to_device(p)
+        val = self.m_image.getPixel(x, y)
+        rgba = self.m_image.colorGet(val)
+        return rgba
+
     # DRAWING FUNCTIONS
 
     def draw_point(self, p):

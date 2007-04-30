@@ -135,6 +135,19 @@ class Image(object):
 		 self.height(), smooth)
 	self.m_image = new
 
+    def crop(self, p, width, height):
+        """Crop the image starting at upper left point `p' and width `w',
+        height `h'.
+        """
+        new = gd.createImage(width, height, self.truecolor())
+	if not self.truecolor() and self.transparent() != -1:
+	    r, g, b, a = xRGBA(self.get_color(self.transparent()))
+	    trans = new.colorAllocate(r, g, b, a)
+	    new.colorTransparent(trans)
+	    new.rectangle(0, 0, width, height, trans, 1)
+	new.copy(self.m_image, 0, 0, p[0], p[1], width, height)
+	self.m_image = new
+
     def convert_palette(self, ncolors, dither=1):
 	"""Convert a truecolor image to indexed color with at most `ncolors'
 	colors.
