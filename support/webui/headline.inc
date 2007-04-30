@@ -14,6 +14,6 @@
     print '<p>'
     print tr('Showing %s %d through %d out of a total of %d %s that match' \
              ' your query.') % (tr(object), start+1, start+results, count,
-                                tr(object) + 's')
+                                tr('plural:%s' % object))
     print '</p>'
 %>
